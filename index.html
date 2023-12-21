@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Liz Meds</title>
+  </head>
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 50%;
+      margin-top: 20px;
+    }
+
+    table,
+    th,
+    td {
+      border: 1px solid #ddd;
+    }
+
+    th,
+    td {
+      padding: 10px;
+      text-align: center;
+    }
+    button {
+      margin-top: 10px;
+    }
+  </style>
+  <body>
+    <h4>MEDS</h4>
+    <table id="table">
+      <tr>
+        <th>Medicine</th>
+        <th>Home</th>
+        <th>Need</th>
+      </tr>
+    </table>
+    <button onclick="addRow()">Add Row</button>
+    <button onclick="addColumn()">ADD COLUMN</button>
+    <button onclick="saveData()">Save Data</button>
+
+    <script>
+      // Load data from local storage when the page loads
+      window.onload = loadData;
+
+      function loadData() {
+        let table = document.getElementById("table");
+
+        // Get saved data from local storage
+        let savedData = JSON.parse(localStorage.getItem("medsData")) || [];
+
+        // Populate the table with saved data
+        savedData.forEach((rowData) => {
+          let newRow = table.insertRow(table.rows.length);
+
+          rowData.forEach((cellValue) => {
+            let cell = newRow.insertCell(newRow.cells.length);
+            let input = document.createElement("input");
+            input.type = "text";
+            input.value = cellValue;
+            cell.appendChild(input);
+          });
+        });
+      }
+
+      function addRow() {
+        let table = document.getElementById("table");
+        let newRow = table.insertRow(table.rows.length);
+
+        for (let i = 0; i < table.rows[0].cells.length; i++) {
+          let cell = newRow.insertCell(i);
+          let input = document.createElement("input");
+          input.type = "text";
+          input.value = "";
+          cell.appendChild(input);
+        }
+      }
+
+      function addColumn() {
+        let table = document.getElementById("table");
+
+        for (let i = 0; i < table.rows.length; i++) {
+          let cell = table.rows[i].insertCell(table.rows[i].cells.length);
+          let input = document.createElement("input");
+          input.type = "text";
+          input.value = "";
+          cell.appendChild(input);
+        }
+      }
+
+      function saveData() {
+        let table = document.getElementById("table");
+        let medsData = [];
+
+        // Loop through rows and cells to collect data
+        for (let i = 0; i < table.rows.length; i++) {
+          let rowData = [];
+          for (let j = 0; j < table.rows[i].cells.length; j++) {
+            let inputValue = table.rows[i].cells[j].querySelector("input").value;
+            rowData.push(inputValue);
+          }
+          medsData.push(rowData);
+        }
+
+        // Save data to local storage
+        localStorage.setItem("medsData", JSON.stringify(medsData));
+        alert("Data saved successfully!");
+      }
+    </script>
+  </body>
+</html>
